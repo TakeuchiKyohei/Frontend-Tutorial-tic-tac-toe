@@ -1,0 +1,27 @@
+body{
+  /* 全体を中央揃え */
+  text-align: center;
+  /* 全体の文字の大きさ変更 */
+  font-size: 30px;
+}
+
+input{
+   /* ボタンの文字の大きさを変更 */
+  font-size: 30px;
+}
+
+.block{
+  /* マス目を正方形へ */
+  width: 40px;
+  height: 40px;
+  /* マス目の修正 */
+  vertical-align: middle;
+  margin-bottom: 10px;
+}
+
+input[value="○"]{
+  color:red;
+}
+input[value="×"]{
+  color:blue;
+}
