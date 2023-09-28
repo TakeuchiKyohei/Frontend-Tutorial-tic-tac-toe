@@ -12,6 +12,9 @@ const IDS =[
   [6,7,8]
 ];
 
+// 実行中のフラグ
+let Run = true;
+
 // IDからオブジェクトを取得
 function $(id){
   // オブジェクト取得
@@ -33,8 +36,20 @@ function change_display(){
   }
 }
 
+// 勝敗結果表示
+function result(message){
+  $("result").innerHTML = message;
+  Run = false;
+  // もう一度遊ぶボタンを表示
+  $("again").style.display ="";
+}
+
 // click時に呼び出される関数
 function click_action(event){
+  // ゲーム実行中でなければ終了
+  if (!Run){
+    return;
+  }
   // clickされたマス目のIDの取得
   let id = event.target.id;
   // IDからオブジェクトを取得
@@ -66,6 +81,7 @@ function judge_end(){
   for (let row=0;row < 3;row++){
     end = win(IDS[row][0],IDS[row][1],IDS[row][2]);
     if (end){
+      result($(IDS[row][0]).value + "の勝ち");
       return true;
     }
   }
@@ -73,12 +89,31 @@ function judge_end(){
   for (let col=0;col < 3;col++){
     end = win(IDS[0][col],IDS[1][col],IDS[2][col])
     if (end){
+      result($(IDS[0][col]).value + "の勝ち");
       return true;
     }
   }
   // 斜め(右)3マスが同じマーク
+  end = win(IDS[0][0],IDS[1][1],IDS[2][2])
+  if (end){
+    result($(IDS[0][0]).value + "の勝ち");
+    return true;
+  }
   // 斜め(左)3マスが同じマーク
+  end = win(IDS[0][2],IDS[1][1],IDS[2][0])
+  if (end){
+    result($(IDS[0][2]).value + "の勝ち");
+    return true;
+  }
+
+  // 引き分けの判定
+  if (9 <=count ){
+    result("引き分け");
+    return true;
+  }
+
   // ゲームが続行する場合はfalseを返す
+  return false;
 }
 
 // 勝利を判定
@@ -104,6 +139,28 @@ function win(first_id, second_id, third_id){
   return false;
 }
 
+// もう一度遊ぶ
+function reset_action(){
+  // ターンを1に戻す
+  count = 1;
+  change_display();
+  // マスを空にする
+  for (let row=0;row < 3;row++){
+    for (let col=0;col < 3;col++){
+      $(IDS[row][col]).value = "";
+    }
+  }
+
+  // 結果表示を空にする
+  result("");
+
+  // ゲームを実行中に戻す
+  Run = true;
+
+  // もう一度遊ぶボタンを非表示
+  $("again").style.display = "none" ;
+}
+
 // 画面を読み込んだ時の処理
 function load(){
   // マス目にイベントを設定する
@@ -112,6 +169,8 @@ function load(){
       $(IDS[row][col]).onclick = click_action;
     }
   }
+  $("again").onclick = reset_action;
+  $("again").style.display = "none";
 }
 
 // 画面読み込み時のイベントの設定
